@@ -1,0 +1,13 @@
+version: "3.8"
+
+services:
+  app:
+    hostname: app
+    build:
+      context: .
+      target: base
+    ports:
+      - "420:8080"
+    entrypoint: sh -c "echo 'Chess waiting for manual start' && tail -f /dev/null"
+    volumes:
+      - ./:/app
