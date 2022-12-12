@@ -1,15 +1,19 @@
 use board::Board;
 use board::position::Position;
+use yew::prelude::*;
+use chess_drag::{drag, dragstart, dragend, dragenter, dragover, dragleave, dragdrop};
 
 #[path="../src/entities/board.rs"]
-pub mod board;
+mod board;
 
-use yew::prelude::*;
+#[path="../src/handlers/chess_drag.rs"]
+mod chess_drag;
 
 #[function_component]
 fn App() -> Html {
-    let fen = "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 1";
+    // let fen = "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 1";
     // let fen = "4k2r/6r1/8/8/8/8/3R4/R3K3 w Qk - 0 1";
+    let fen = "4k3/qqqqqqqq/8/8/8/8/QQQQQQQQ/4K3 w Qk - 0 1";
     let board = Board::new(fen);
     let is_white_view = true;
 
@@ -32,13 +36,30 @@ fn App() -> Html {
 
                 html! {
                     <div class={format!("box {}", color)}>
-                        <div class="dropzone">
+                        <div
+                            class="dropzone"
+                            ondragenter={Callback::from(dragenter)}
+                            ondragover={Callback::from(dragover)}
+                            ondragleave={Callback::from(dragleave)}
+                            ondrop={Callback::from(dragdrop)}
+                        >
                             {if stone.is_some() {
                                 let stone = stone.unwrap();
                                 html! {
-                                    <div draggable="true" class="piece">
-                                        <img src={stone.image_url} alt={format!("{} {}", stone.color, stone.name)} />
+                                    <div
+                                        draggable="true"
+                                        class="piece"
+                                        ondrag={Callback::from(drag)}
+                                        ondragstart={Callback::from(dragstart)}
+                                        ondragend={Callback::from(dragend)}
+                                    >
+                                        <img
+                                            draggable="false"
+                                            src={stone.image_url}
+                                            alt={format!("{} {}", stone.color, stone.name)}
+                                        />
                                     </div>
+                                    
                                 }
                             } else {html! {}}}
                             {if (is_white_view && position.x == 0) || (!is_white_view && position.x == 7) {
@@ -64,5 +85,6 @@ fn App() -> Html {
 }
 
 fn main() {
+    wasm_logger::init(wasm_logger::Config::default());
     yew::Renderer::<App>::new().render();
 }
