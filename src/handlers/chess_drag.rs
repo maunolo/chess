@@ -36,26 +36,6 @@ fn pieces() -> Vec<Element> {
   ElementVec::from(document().query_selector_all(".piece").unwrap()).0
 }
 
-struct ChessDAD {
-  dragzones: Vec<Element>,
-  pieces: Vec<Element>,
-  current_piece: Option<Element>,
-  current_dropzone: Option<Element>,
-  current_event: Option<DragEvent>,
-}
-
-impl ChessDAD {
-  pub fn new() -> ChessDAD {
-    ChessDAD {
-      dragzones: dragzones(),
-      pieces: pieces(),
-      current_piece: None,
-      current_dropzone: None,
-      current_event: None,
-    }
-  }
-}
-
 fn current_piece() -> Option<Element> {
   document().query_selector(".dragging").unwrap()
 }

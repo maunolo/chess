@@ -35,48 +35,46 @@ fn App() -> Html {
                 let stone = board.get(&position);
 
                 html! {
-                    <div class={format!("box {}", color)}>
-                        <div
-                            class="dropzone"
-                            ondragenter={Callback::from(dragenter)}
-                            ondragover={Callback::from(dragover)}
-                            ondragleave={Callback::from(dragleave)}
-                            ondrop={Callback::from(dragdrop)}
-                        >
-                            {if stone.is_some() {
-                                let stone = stone.unwrap();
-                                html! {
-                                    <div
-                                        draggable="true"
-                                        class="piece"
-                                        ondrag={Callback::from(drag)}
-                                        ondragstart={Callback::from(dragstart)}
-                                        ondragend={Callback::from(dragend)}
-                                    >
-                                        <img
-                                            draggable="false"
-                                            src={stone.image_url}
-                                            alt={format!("{} {}", stone.color, stone.name)}
-                                        />
-                                    </div>
-                                    
-                                }
-                            } else {html! {}}}
-                            {if (is_white_view && position.x == 0) || (!is_white_view && position.x == 7) {
-                                html! {
-                                    <div class="row-label">
-                                        {row_str}
-                                    </div>
-                                }
-                            } else {html! {}}}
-                            {if (is_white_view && position.y == 7) || (!is_white_view && position.y == 0) {
-                                html! {
-                                    <div class="col-label">
-                                        {col_str}
-                                    </div>
-                                }
-                            } else {html! {}}}
-                        </div>
+                    <div
+                        class={format!("box dropzone {}", color)}
+                        ondragenter={Callback::from(dragenter)}
+                        ondragover={Callback::from(dragover)}
+                        ondragleave={Callback::from(dragleave)}
+                        ondrop={Callback::from(dragdrop)}
+                    >
+                        {if stone.is_some() {
+                            let stone = stone.unwrap();
+                            html! {
+                                <div
+                                    draggable="true"
+                                    class="piece"
+                                    ondrag={Callback::from(drag)}
+                                    ondragstart={Callback::from(dragstart)}
+                                    ondragend={Callback::from(dragend)}
+                                >
+                                    <img
+                                        draggable="false"
+                                        src={stone.image_url}
+                                        alt={format!("{} {}", stone.color, stone.name)}
+                                    />
+                                </div>
+                                
+                            }
+                        } else {html! {}}}
+                        {if (is_white_view && position.x == 0) || (!is_white_view && position.x == 7) {
+                            html! {
+                                <div class="row-label">
+                                    {row_str}
+                                </div>
+                            }
+                        } else {html! {}}}
+                        {if (is_white_view && position.y == 7) || (!is_white_view && position.y == 0) {
+                            html! {
+                                <div class="col-label">
+                                    {col_str}
+                                </div>
+                            }
+                        } else {html! {}}}
                     </div>
                 }
             })}
