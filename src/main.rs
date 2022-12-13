@@ -1,13 +1,10 @@
-use board::Board;
-use board::position::Position;
 use yew::prelude::*;
-use chess_drag::{drag, dragstart, dragend, dragenter, dragover, dragleave, dragdrop};
+use entities::board::Board;
+use entities::position::Position;
+use handlers::chess_mouse::{mousemove, mouseup, mousedown};
 
-#[path="../src/entities/board.rs"]
-mod board;
-
-#[path="../src/handlers/chess_drag.rs"]
-mod chess_drag;
+mod entities;
+mod handlers;
 
 #[function_component]
 fn App() -> Html {
@@ -18,7 +15,7 @@ fn App() -> Html {
     let is_white_view = true;
 
     html! {
-        <div class="container">
+        <chess-board class="container" onmousemove={Callback::from(mousemove)}>
             {for (0..64).map(|i| {
                 let x = i % 8;
                 let y = i / 8;
@@ -37,26 +34,17 @@ fn App() -> Html {
                 html! {
                     <div
                         class={format!("box dropzone {}", color)}
-                        ondragenter={Callback::from(dragenter)}
-                        ondragover={Callback::from(dragover)}
-                        ondragleave={Callback::from(dragleave)}
-                        ondrop={Callback::from(dragdrop)}
                     >
                         {if stone.is_some() {
                             let stone = stone.unwrap();
                             html! {
                                 <div
-                                    draggable="true"
                                     class="piece"
-                                    ondrag={Callback::from(drag)}
-                                    ondragstart={Callback::from(dragstart)}
-                                    ondragend={Callback::from(dragend)}
+                                    onmousedown={Callback::from(mousedown)}
+                                    onmouseup={Callback::from(mouseup)}
+                                    ondragstart={Callback::from(|e: DragEvent| e.prevent_default())}
+                                    style={format!("background-image: url({});", stone.image_url)}
                                 >
-                                    <img
-                                        draggable="false"
-                                        src={stone.image_url}
-                                        alt={format!("{} {}", stone.color, stone.name)}
-                                    />
                                 </div>
                                 
                             }
@@ -78,7 +66,7 @@ fn App() -> Html {
                     </div>
                 }
             })}
-        </div>
+        </chess-board>
     }
 }
 

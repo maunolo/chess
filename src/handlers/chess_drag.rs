@@ -1,6 +1,6 @@
 use yew::{DragEvent as YewDragEvent};
 use web_sys::{DragEvent, Document, NodeList, Element};
-use log::debug;
+use log;
 use wasm_bindgen::JsCast;
 
 struct JsDragEvent(DragEvent);
@@ -47,53 +47,56 @@ fn event_target_elem(event: &YewDragEvent) -> Element {
 
 pub fn drag(event: YewDragEvent) {
   let event = JsDragEvent::from(event).0;
-  log::debug!("mov X: {:?}", event.movement_x());
-  log::debug!("mov Y:{:?}", event.movement_y());
+  // log::debug!("drag");
 }
 
 pub fn dragstart(event: YewDragEvent) {
+  log::debug!("dragstart");
   let piece = event_target_elem(&event);
   piece.set_class_name(format!("{} dragging", piece.class_name()).as_str());
+  // event.prevent_default();
 
   let event = JsDragEvent::from(event).0;
   let data_tranfer = event.data_transfer().unwrap();
-  let blank = document().create_element("div").unwrap();
-  data_tranfer.set_effect_allowed("grabbing");
-  data_tranfer.set_drag_image(&blank, 0, 0);
-
-  // let drag_zones = drag_zones();
-  // for i in 0..drag_zones.length() {
-  //   let dropzone = drag_zones.item(i).unwrap();
-  //   let dropzone_element = JsCast::dyn_ref::<Element>(&dropzone).unwrap();
-  //   dropzone_element.set_class_name("dropzone highlight");
-  // }
+  // let blank = document().create_element("div").unwrap();
+  // data_tranfer.set_drop_effect("move");
+  // data_tranfer.set_drag_image(&blank, 0, 0);
+  let piece_img_node = piece.first_child().unwrap();
+  log::debug!("piece_img_node: {:?}", piece_img_node);
+  let piece_img = JsCast::dyn_ref::<Element>(&piece_img_node).unwrap();
+  log::debug!("piece_img: {:?}", piece_img);
+  data_tranfer.set_drag_image(piece_img, 0, 0);
 }
 
 pub fn dragend(event: YewDragEvent) {
+  log::debug!("dragend");
   let piece = event_target_elem(&event);
   piece.set_class_name("piece");
-
-  // let drag_zones = drag_zones();
-  // for i in 0..drag_zones.length() {
-  //   let dropzone = drag_zones.item(i).unwrap();
-  //   let element = JsCast::dyn_ref::<Element>(&dropzone).unwrap().to_owned();
-  //   element.set_class_name("dropzone");
-  // }
 }
 
 pub fn dragenter(event: YewDragEvent) {
-
+  log::debug!("dragenter");
+  let event = JsDragEvent::from(event).0;
+  let data_tranfer = event.data_transfer().unwrap();
+  data_tranfer.set_drop_effect("move");
+  //  data_tranfer.set_effect_allowed("all");
 }
 
 pub fn dragover(event: YewDragEvent) {
+  // log::debug!("dragover");
   event.prevent_default();
+  let event = JsDragEvent::from(event).0;
+  let data_tranfer = event.data_transfer().unwrap();
+  data_tranfer.set_drop_effect("move");
+  // data_tranfer.set_effect_allowed("all");
 }
 
 pub fn dragleave(event: YewDragEvent) {
-  
+  log::debug!("dragleave");
 }
 
 pub fn dragdrop(event: YewDragEvent) {
+  log::debug!("dragdrop");
   let elem = event_target_elem(&event);
   let piece = current_piece();
   if piece.is_some() {
