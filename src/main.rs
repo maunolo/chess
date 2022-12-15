@@ -34,15 +34,15 @@ fn App() -> Html {
             <chess-board class="chessboard">
                 <svg viewBox="0 0 100 100" class="coordinates">
                     {for (0..8).map(|i| {
-                        let i = if is_white_view { i } else { 7 - i };
+                        let y = if is_white_view { i } else { 7 - i };
                         html! {
-                            <text x="0.50" y={format!("{}", 12.5 * i as f64 + 2.25)} font-size="2">{row_str(i)}</text>
+                            <text x="0.50" y={format!("{}", 12.5 * i as f64 + 2.25)} font-size="2">{row_str(y)}</text>
                         }
                     })}
                     {for (0..8).map(|i| {
-                        let i = if is_white_view { i } else { 7 - i };
+                        let x = if is_white_view { i } else { 7 - i };
                         html! {
-                            <text x={format!("{}", 12.5 * i as f64 + 10.75)} y="99.50" font-size="2">{col_str(i)}</text>
+                            <text x={format!("{}", 12.5 * i as f64 + 10.75)} y="99.50" font-size="2">{col_str(x)}</text>
                         }
                     })}
                 </svg>
