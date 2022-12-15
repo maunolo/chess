@@ -50,11 +50,6 @@ pub fn fen_to_stones(field: &str) -> Vec<Vec<Option<Stone>>> {
     ).collect()
 }
 
-#[path="./stone.rs"]
-pub mod stone;
-#[path="./position.rs"]
-pub mod position;
-
 pub enum CastleOptions {
   CanCastleKingside,
   CanCastleQueenside

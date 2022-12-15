@@ -1,1 +1,1 @@
-pub mod chess_mouse;
+pub mod mouse;

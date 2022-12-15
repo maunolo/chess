@@ -1,15 +1,24 @@
 body {
   margin: 0;
+  padding: 0;
+  box-sizing: border-box;
   background: #222;
 }
 
 .container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.chessboard {
   margin: auto;
   display: grid;
   width: min-content;
   grid-template-columns: repeat(8, 1fr);
   grid-template-rows: repeat(8, 1fr);
-  margin-top: 30px;
   font-family: monospace;
   font-weight: 800;
   position: relative;
@@ -20,9 +29,22 @@ body {
   user-select: none; /* Standard */
 }
 
-.box {
+.coordinates {
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.coordinates text {
+  color: #6d6d6d5d;
+}
+
+.square {
   width: 100px;
   height: 100px;
+  position: relative;
+  z-index: 0;
+  pointer-events: all;
 }
 
 .dropzone {
@@ -32,42 +54,44 @@ body {
   align-items: center;
 }
 
-.row-label {
-  position: absolute;
-  top: 2px;
-  left: 2px;
-}
-
-.col-label {
-  position: absolute;
-  bottom: 2px;
-  right: 5px;
-}
-
-.piece {
-  width: 100%;
-  height: 100%;
-  cursor: move; /* fallback: no `url()` support or images disabled */
-  cursor: url(images/grab.cur); /* fallback: Chrome 1-21, Firefox 1.5-26, Safari 4+, IE, Edge 12-14, Android 2.1-4.4.4 */
-  cursor: grab; /* W3C standards syntax, all modern browser */
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
-}
-
-.dragging:active {
-  cursor: grabbing;
-  cursor: url(images/grabbing.cur);
-}
-
-.ghost {
-  opacity: 0;
-}
-
 .white {
-  background-color: #cdcdcd;
+  background-color: #dbdbdb;
+}
+
+.white.selected {
+  background-color: #d5d691;
 }
 
 .black {
-  background-color: #787878;
+  background-color: #999999;
+}
+
+.black.selected {
+  background-color: #979363;
+}
+
+.hovered {
+  box-sizing: border-box;
+  border: 5px solid #f0f0f0;
+}
+
+.piece {
+  width: 100px;
+  height: 100px;
+  cursor: grab;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  position: absolute;
+  z-index: 2;
+  pointer-events: all;
+}
+
+.dragging {
+  z-index: 3;
+  cursor: grabbing;
+}
+
+.dragging:hover {
+  pointer-events: none;
 }
