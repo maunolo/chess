@@ -1,3 +1,5 @@
+use web_sys::Element;
+
 pub struct ClassList {
   pub class_name: String
 }
@@ -24,4 +26,23 @@ pub trait ClassListExt {
   fn class_list_add(&self, class: &str);
   fn class_list_remove(&self, class: &str);
   fn class_list_include(&self, class: &str) -> bool;
+}
+
+impl ClassListExt for Element {
+  fn class_list_add(&self, class: &str) {
+    let mut class_list = ClassList::new(&self.class_name());
+    class_list.add(class);
+    self.set_class_name(&class_list.class_name);
+  }
+
+  fn class_list_remove(&self, class: &str) {
+    let mut class_list = ClassList::new(&self.class_name());
+    class_list.remove(class);
+    self.set_class_name(&class_list.class_name);
+  }
+
+  fn class_list_include(&self, class: &str) -> bool {
+    let class_list = ClassList::new(&self.class_name());
+    class_list.class_name.split(" ").any(|c| c == class)
+  }
 }

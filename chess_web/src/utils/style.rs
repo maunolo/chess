@@ -1,5 +1,7 @@
 use std::collections::HashMap;
 
+use web_sys::Element;
+
 pub struct Style {
   pub properties: HashMap<String, String>
 }
@@ -40,4 +42,12 @@ impl Style {
 
 pub trait StyleExt {
   fn style_set(&self, key: &str, value: &str);
+}
+
+impl StyleExt for Element {
+  fn style_set(&self, key: &str, value: &str) {
+    let mut style = Style::new(&self.get_attribute("style").unwrap_or(String::new()));
+    style.set(key, value);
+    self.set_attribute("style", &style.to_string()).unwrap();
+  }
 }

@@ -1,16 +1,16 @@
 version: "3.8"
 
 services:
-  app:
-    hostname: app
+  chess_web:
+    hostname: chess_web
     build:
-      context: .
+      context: ./chess_web
       target: base
     ports:
       - "420:8080"
     entrypoint: sh -c "echo 'Chess waiting for manual start' && tail -f /dev/null"
     volumes:
-      - ./:/app
+      - ./chess_web:/opt/chess_web
 
   nginx:
     image: nginx:latest
