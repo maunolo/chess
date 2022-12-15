@@ -36,7 +36,7 @@ body {
 }
 
 .coordinates text {
-  color: #6d6d6d5d;
+  fill: #0000007b;
 }
 
 .square {
@@ -73,6 +73,11 @@ body {
 .hovered {
   box-sizing: border-box;
   border: 5px solid #f0f0f0;
+  cursor: grabbing !important;
+}
+
+.hovered .piece {
+  cursor: grabbing !important;
 }
 
 .piece {
@@ -88,7 +93,7 @@ body {
 }
 
 .dragging {
-  z-index: 3;
+  z-index: 4;
   cursor: grabbing;
 }
 
