@@ -12,7 +12,10 @@ impl ClassList {
   }
 
   pub fn add(& mut self, class: &str) {
-    self.class_name.push_str(format!(" {}", class).as_str());
+    let new_class_name: Vec<&str> = self.class_name.split(" ").collect();
+    if !new_class_name.contains(&class) {
+      self.class_name.push_str(format!(" {}", class).as_str());
+    }
   }
 
   pub fn remove(& mut self, class: &str) {

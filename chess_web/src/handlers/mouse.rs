@@ -1,11 +1,11 @@
 use yew::MouseEvent as YewMouseEvent;
-use web_sys::DomRect;
+use web_sys::{Element, DomRect};
 // use log;
 use crate::utils::class_list::ClassListExt;
 use crate::utils::elements;
 use crate::utils::style::StyleExt;
 
-fn translate_value(event: YewMouseEvent, board_bounding: DomRect) -> String {
+fn translate_value(event: &YewMouseEvent, board_bounding: DomRect) -> String {
   let translate_x = match event.client_x() as f64 - board_bounding.left() {
     x if x < 0.0 => 0.0,
     x if x > 800.0 => 800.0,
@@ -19,19 +19,25 @@ fn translate_value(event: YewMouseEvent, board_bounding: DomRect) -> String {
   format!("translate({}%, {}%)", translate_x, translate_y)
 }
 
-// Only works in the browser
+fn move_piece(piece: &Element, event: &YewMouseEvent) {
+  let chess_board = elements::query_selector(".chessboard").unwrap();
 
-pub fn mousemove(event: YewMouseEvent) {
-  let chess_board = elements::chess_board();
+  if !piece.parent_element().unwrap().class_list_include("chessboard") {
+    piece.remove();
+    chess_board.append_child(&piece).unwrap();
+  }
+
   let board_bounding = chess_board.get_bounding_client_rect();
   let translate_value = translate_value(event, board_bounding);
 
-  if let Some(piece) = elements::current_piece() {
-    if !piece.parent_element().unwrap().class_list_include("chessboard") {
-      piece.remove();
-      chess_board.append_child(&piece).unwrap();
-    }
-    piece.style_set("transform", &translate_value);
+  piece.style_set("transform", &translate_value);
+}
+
+// Only works in the browser
+
+pub fn mousemove(event: YewMouseEvent) {
+  if let Some(piece) = elements::query_selector(".dragging") {
+    move_piece(&piece, &event);
   }
 }
 
@@ -40,31 +46,53 @@ pub fn mousedown(event: YewMouseEvent) {
   let piece = elements::event_target_elem(&event);
   piece.class_list_add("dragging");
 
-  // Add selected class to the square
-  if let Some(square) = elements::selected_square() {
-    square.class_list_remove("selected");
+  // Highlight the square the piece is on
+  if let Some(square) = piece.parent_element() {
+    square.class_list_add("highlighted");
+    square.class_list_add("hovered");
   }
 
-  let square = piece.parent_element().unwrap();
-  square.class_list_add("selected");
+  // Move the piece to client cursor position
+  move_piece(&piece, &event);
 }
 
 pub fn mouseup(_event: YewMouseEvent) {
+  let valid_move = true;
+
   // Remove dragging class from the piece
-  if let Some(piece) = elements::current_piece() {
+  if let Some(piece) = elements::query_selector(".dragging") {
     piece.remove();
-    if let Some(square) = elements::hovered_square() {
-      piece.style_set("transform", "");
-      square.append_child(&piece).unwrap();
+    piece.style_set("transform", "");
+    
+    let hovered_square = elements::query_selector(".hovered");
+    let highlighted_square = elements::query_selector(".highlighted");
+
+    match valid_move {
+      true => {
+        // Move the piece to the hovered square
+        if let Some(square) = hovered_square.clone() {
+          square.append_child(&piece).unwrap();
+        }
+      },
+      false => {
+        // Move the piece back to the highlighted square
+        if let Some(square) = highlighted_square.clone() {
+          square.append_child(&piece).unwrap();
+        }
+      }
+    }
+
+    // Remove the hovered class from the square
+    if let Some(square) = hovered_square {
       square.class_list_remove("hovered");
     }
 
-    piece.class_list_remove("dragging");
-  }
+    // Remove the highlighted class from the square
+    if let Some(square) = highlighted_square {
+      square.class_list_remove("highlighted");
+    }
 
-  // Remove selected class from the square
-  if let Some(square) = elements::selected_square() {
-    square.class_list_remove("selected");
+    piece.class_list_remove("dragging");
   }
 }
 
@@ -76,11 +104,11 @@ pub fn mouseover(event: YewMouseEvent) {
     target.clone()
   };
 
-  if let Some(square) = elements::hovered_square() {
+  if let Some(square) = elements::query_selector(".hovered") {
     square.class_list_remove("hovered");
   }
 
-  if let Some(_piece) = elements::current_piece() {
+  if let Some(_piece) = elements::query_selector(".dragging") {
     square.class_list_add("hovered");
   }
 }
