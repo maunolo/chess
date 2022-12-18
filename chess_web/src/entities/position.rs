@@ -18,6 +18,10 @@ impl Position {
     let buffer: [u8; 1] = [self.x as u8 + 97];
     format!("{}{}", std::str::from_utf8(&buffer).unwrap(), 8 - self.y)
   }
+
+  pub fn css_class(&self) -> String {
+    format!("square-{}", self.to_string())
+  }
 }
 
 impl FromStr for Position {

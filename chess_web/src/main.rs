@@ -23,7 +23,8 @@ fn App() -> Html {
     // let fen = "4k3/qqqqqqqq/8/8/8/8/QQQQQQQQ/4K3 w Qk - 0 1";
     let board = Board::new(fen);
     // The is_white_view flag is used to flip the board
-    let is_white_view = false;
+    let is_white_view = true;
+    let chess_board_class = if is_white_view { "chessboard" } else { "chessboard flipped" };
 
     html! {
         <div
@@ -31,7 +32,27 @@ fn App() -> Html {
             onmousemove={Callback::from(mousemove)}
             onmouseup={Callback::from(mouseup)}
         >
-            <chess-board class="chessboard">
+            <chess-board
+                class={chess_board_class}
+                onmouseover={Callback::from(mouseover)}
+            >
+                <svg viewBox="0 0 100 100" class="board">
+                    {for (0..32).map(|i| {
+                        let x = 12.5 * (i % 8) as f64;
+                        let y = 25.0 * (i / 8) as f64;
+                        let rotate = format!("rotate(180, {}, {})", x + 6.25, y + 12.5);
+                        html! {
+                            <image
+                                href="/static/chess/board/aluminium.png"
+                                x={format!("{}", x)}
+                                y={format!("{}", y)}
+                                height="25"
+                                width="12.5"
+                                transform={if i % 2 == 0 {"".to_string()} else {rotate}}
+                            />
+                        }
+                    })}
+                </svg>
                 <svg viewBox="0 0 100 100" class="coordinates">
                     {for (0..8).map(|i| {
                         let y = if is_white_view { i } else { 7 - i };
@@ -51,27 +72,18 @@ fn App() -> Html {
                     let y = i / 8;
                     let position = Position::new(x, y, is_white_view);
 
-                    let color = if (i + position.y) % 2 == 0 { "white" } else { "black" };
-
-                    html! {
-                        <div
-                            class={format!("square dropzone {} {}", color, position.to_string())}
-                            onmouseover={Callback::from(mouseover)}
-                        >
-                            {if let Some(stone) = board.get(&position) {
-                                html! {
-                                    <div
-                                        class="piece"
-                                        onmousedown={Callback::from(mousedown)}
-                                        ondragstart={Callback::from(|e: DragEvent| e.prevent_default())}
-                                        style={format!("background-image: url({});", stone.image_url)}
-                                    >
-                                    </div>
-                                    
-                                }
-                            } else {html! {}}}
-                        </div>
-                    }
+                    if let Some(stone) = board.get(&position) {
+                        html! {
+                            <div
+                                class={format!("piece {} {}", stone.image_class, position.css_class())}
+                                onmousedown={Callback::from(mousedown)}
+                                ondragstart={Callback::from(|e: DragEvent| e.prevent_default())}
+                                data-square={position.to_string()}
+                            >
+                            </div>
+                            
+                        }
+                    } else {html! {}}
                 })}
             </chess-board>
         </div>

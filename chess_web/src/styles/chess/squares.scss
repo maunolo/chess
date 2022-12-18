@@ -1,0 +1,35 @@
+$columns:
+  "a" 0,
+  "b" 1,
+  "c" 2,
+  "d" 3,
+  "e" 4,
+  "f" 5,
+  "g" 6,
+  "h" 7;
+
+$columns-reverse:
+  "a" 7,
+  "b" 6,
+  "c" 5,
+  "d" 4,
+  "e" 3,
+  "f" 2,
+  "g" 1,
+  "h" 0;
+
+@each $column, $column-index in $columns {
+  @for $i from 0 through 7 {
+    .square-#{$column}#{$i + 1} {
+      transform: translate(calc(100% * $column-index), calc(100% * calc(7 - $i)));
+    }
+  }
+}
+
+@each $column, $column-index in $columns-reverse {
+  @for $i from 0 through 7 {
+    .flipped .square-#{$column}#{$i + 1} {
+      transform: translate(calc(100% * $column-index), calc(100% * $i));
+    }
+  }
+}

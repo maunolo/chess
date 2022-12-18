@@ -1,5 +1,5 @@
-use crate::entities::position::Position;
-use crate::entities::stone::Stone;
+use super::position::Position;
+use super::stone::Stone;
 
 pub fn fen_to_passant(field: &str) -> Option<Position> {
     if field == "-" {
