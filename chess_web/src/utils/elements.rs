@@ -35,7 +35,6 @@ pub fn add_to_board(elem: &Element) {
   match already_in_board {
     Some(true) => {},
     Some(false) | None => {
-      log::debug!("Adding to board");
       let chess_board = query_selector(".chessboard").unwrap();
       chess_board.append_child(elem).unwrap();
     }
@@ -58,7 +57,7 @@ fn translate_value(event: &YewMouseEvent, elem: &Element) -> String {
   format!("translate({}%, {}%)", translate_x, translate_y)
 }
 
-fn mouse_position_in_bounding(event: &YewMouseEvent, bounding: &DomRect) -> (f64, f64) {
+pub fn mouse_position_in_bounding(event: &YewMouseEvent, bounding: &DomRect) -> (f64, f64) {
   let max_x = bounding.width();
   let max_y = bounding.height();
 

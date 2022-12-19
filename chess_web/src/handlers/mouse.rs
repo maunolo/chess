@@ -1,6 +1,8 @@
 use web_sys::Element;
 use yew::MouseEvent as YewMouseEvent;
 use log;
+
+use crate::entities::position::Position;
 use crate::utils::class_list::ClassListExt;
 use crate::utils::elements;
 use crate::utils::style::StyleExt;
@@ -24,7 +26,7 @@ pub fn mousemove(event: YewMouseEvent) {
 pub fn mousedown(event: YewMouseEvent) {
   // Add dragging class to the piece
   let piece = elements::event_target_elem(&event);
-  select_piece_square(&piece);
+  // select_piece_square(&piece);
   piece.class_list_add("dragging");
 
   // Add dragging-over class to the board
@@ -43,6 +45,17 @@ pub fn mouseup(_event: YewMouseEvent) {
   if let Some(piece) = elements::query_selector(".dragging") {
     piece.remove_style("transform");
     piece.remove_style("transition");
+
+    let chess_board = elements::query_selector(".chessboard").unwrap();
+    let bounding = chess_board.get_bounding_client_rect();
+    let (x, y) = elements::mouse_position_in_bounding(&_event, &bounding);
+    let is_white_view = !chess_board.class_list_include("flipped");
+    let position = Position::from_ui_position(x, y, is_white_view);
+
+    let old_square = piece.get_attribute("data-square").unwrap();
+    piece.set_attribute("data-square", &position.to_string()).unwrap();
+    piece.class_list_remove(&format!("square-{}", old_square));
+    piece.class_list_add(&format!("square-{}", position.to_string()));
 
     // Remove the hovered class from the square
     if let Some(square) = elements::query_selector(".dragging-over") {
