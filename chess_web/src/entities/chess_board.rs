@@ -125,3 +125,13 @@ impl ChessBoard {
         }.to_string()
     }
 }
+
+impl PartialEq<ChessBoard> for ChessBoard {
+    fn eq(&self, other: &ChessBoard) -> bool {
+        self.fen == other.fen
+    }
+
+    fn ne(&self, other: &ChessBoard) -> bool {
+        self.fen != other.fen
+    }
+}

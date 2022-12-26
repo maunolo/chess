@@ -34,20 +34,21 @@ impl Position {
     format!("square-{}", self.to_string())
   }
 
-  pub fn set_ui_position(& mut self, is_white_view: bool) {
-    let (ui_x, ui_y) = (self.x as f64 * 100.0, self.y as f64 * 100.0);
+  // TODO: use this or remove it
+  // pub fn set_ui_position(& mut self, is_white_view: bool) {
+  //   let (ui_x, ui_y) = (self.x as f64 * 100.0, self.y as f64 * 100.0);
     
-    match is_white_view {
-      true => {
-        self.ui_x = Some(ui_x);
-        self.ui_y = Some(800.0 - ui_y);
-      },
-      false => {
-        self.ui_x = Some(800.0 - ui_x);
-        self.ui_y = Some(ui_y);
-      }
-    }
-  }
+  //   match is_white_view {
+  //     true => {
+  //       self.ui_x = Some(ui_x);
+  //       self.ui_y = Some(ui_y);
+  //     },
+  //     false => {
+  //       self.ui_x = Some(800.0 - ui_x);
+  //       self.ui_y = Some(800.0 - ui_y);
+  //     }
+  //   }
+  // }
 }
 
 impl FromStr for Position {

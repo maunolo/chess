@@ -46,7 +46,7 @@ pub fn mouseup(_event: YewMouseEvent) {
     piece.remove_style("transform");
     piece.remove_style("transition");
 
-    let chess_board = elements::query_selector(".chessboard").unwrap();
+    let chess_board = piece.parent_element().unwrap();
     let bounding = chess_board.get_bounding_client_rect();
     let (x, y) = elements::mouse_position_in_bounding(&_event, &bounding);
     let is_white_view = !chess_board.class_list_include("flipped");
