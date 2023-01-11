@@ -11,13 +11,10 @@ mod utils;
 
 #[function_component]
 fn App() -> Html {
-  // let fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+  let fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
   // let fen = "4k2r/6r1/8/8/8/8/3R4/R3K3 w Qk - 0 1";
-  let fen = "4k3/qqqqqqqq/8/8/8/8/QQQQQQQQ/4K3 w Qk - 0 1";
+  // let fen = "4k3/qqqqqqqq/8/8/8/8/QQQQQQQQ/4K3 w Qk - 0 1";
   let mut chess_board = ChessBoardEntity::new(fen);
-  // let chess_board2 = chess_board.clone();
-  // let chess_board3 = chess_board.clone();
-  // let chess_board4 = chess_board.clone();
 
   // Flip the board
   chess_board.flip();
@@ -25,6 +22,8 @@ fn App() -> Html {
   html! {
     <div
       class="container"
+      // ontouchmove={Callback::from(mousemove)}
+      // ontouchup={Callback::from(mouseup)}
       onmousemove={Callback::from(mousemove)}
       onmouseup={Callback::from(mouseup)}
     >

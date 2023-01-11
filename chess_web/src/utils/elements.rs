@@ -41,32 +41,32 @@ pub fn add_to_board(elem: &Element) {
   }
 }
 
-pub fn move_piece(piece: &Element, event: &YewMouseEvent) {
+pub fn move_piece(piece: &Element, client_position: (f64, f64)) {
   let chess_board = piece.parent_element().unwrap();
-  let translate_value = translate_value(event, &chess_board);
+  let translate_value = translate_value(client_position, &chess_board);
 
   piece.set_style("transform", &translate_value);
   piece.set_style("transition", "none");
 }
 
-fn translate_value(event: &YewMouseEvent, elem: &Element) -> String {
+fn translate_value(client_position: (f64, f64), elem: &Element) -> String {
   let bounding = elem.get_bounding_client_rect();
-  let (x, y) = mouse_position_in_bounding(event, &bounding);
+  let (x, y) = mouse_position_in_bounding(client_position, &bounding);
   let translate_x = x - 50.0;
   let translate_y = y - 50.0;
   format!("translate({}%, {}%)", translate_x, translate_y)
 }
 
-pub fn mouse_position_in_bounding(event: &YewMouseEvent, bounding: &DomRect) -> (f64, f64) {
+pub fn mouse_position_in_bounding(client_position: (f64, f64), bounding: &DomRect) -> (f64, f64) {
   let max_x = bounding.width();
   let max_y = bounding.height();
 
-  let x = match event.client_x() as f64 - bounding.left() {
+  let x = match client_position.0 - bounding.left() {
     x if x < 0.0 => 0.0,
     x if x > max_x => max_x,
     x => x
   };
-  let y = match event.client_y() as f64 - bounding.top() {
+  let y = match client_position.1 - bounding.top() {
     y if y < 0.0 => 0.0,
     y if y > max_y => max_y,
     y => y

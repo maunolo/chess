@@ -1,5 +1,5 @@
 use web_sys::Element;
-use yew::MouseEvent as YewMouseEvent;
+use yew::{MouseEvent as YewMouseEvent, TouchEvent as YewTouchEvent};
 use log;
 
 use crate::entities::position::Position;
@@ -19,7 +19,15 @@ fn select_piece_square(piece: &Element) {
 
 pub fn mousemove(event: YewMouseEvent) {
   if let Some(piece) = elements::query_selector(".dragging") {
-    elements::move_piece(&piece, &event);
+    let client_position = (event.client_x() as f64, event.client_y() as f64);
+    elements::move_piece(&piece, client_position);
+  }
+}
+
+pub fn touchmove(event: YewTouchEvent) {
+  if let Some(piece) = elements::query_selector(".dragging") {
+    let client_position = (10.1, 10.1);
+    elements::move_piece(&piece, client_position);
   }
 }
 
@@ -35,10 +43,11 @@ pub fn mousedown(event: YewMouseEvent) {
   }
 
   // Move the piece to client cursor position
-  elements::move_piece(&piece, &event);
+  let client_position = (event.client_x() as f64, event.client_y() as f64);
+  elements::move_piece(&piece, client_position);
 }
 
-pub fn mouseup(_event: YewMouseEvent) {
+pub fn mouseup(event: YewMouseEvent) {
   // let valid_move = true;
 
   // Remove dragging class from the piece
@@ -48,7 +57,8 @@ pub fn mouseup(_event: YewMouseEvent) {
 
     let chess_board = piece.parent_element().unwrap();
     let bounding = chess_board.get_bounding_client_rect();
-    let (x, y) = elements::mouse_position_in_bounding(&_event, &bounding);
+    let client_position = (event.client_x() as f64, event.client_y() as f64);
+    let (x, y) = elements::mouse_position_in_bounding(client_position, &bounding);
     let is_white_view = !chess_board.class_list_include("flipped");
     let position = Position::from_ui_position(x, y, is_white_view);
 
