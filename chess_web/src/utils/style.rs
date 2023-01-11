@@ -31,6 +31,10 @@ impl Style {
     self.properties.insert(String::from(key), String::from(value));
   }
 
+  pub fn remove(&mut self, key: &str) {
+    self.properties.remove(key);
+  }
+
   pub fn to_string(&self) -> String {
     let mut style = String::new();
     for (key, value) in &self.properties {
@@ -41,13 +45,20 @@ impl Style {
 }
 
 pub trait StyleExt {
-  fn style_set(&self, key: &str, value: &str);
+  fn set_style(&self, key: &str, value: &str);
+  fn remove_style(&self, key: &str);
 }
 
 impl StyleExt for Element {
-  fn style_set(&self, key: &str, value: &str) {
+  fn set_style(&self, key: &str, value: &str) {
     let mut style = Style::new(&self.get_attribute("style").unwrap_or(String::new()));
     style.set(key, value);
+    self.set_attribute("style", &style.to_string()).unwrap();
+  }
+
+  fn remove_style(&self, key: &str) {
+    let mut style = Style::new(&self.get_attribute("style").unwrap_or(String::new()));
+    style.remove(key);
     self.set_attribute("style", &style.to_string()).unwrap();
   }
 }

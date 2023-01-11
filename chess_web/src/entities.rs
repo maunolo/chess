@@ -1,3 +1,3 @@
-pub mod board;
+pub mod chess_board;
 pub mod position;
 pub mod stone;
